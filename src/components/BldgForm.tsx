@@ -7,6 +7,8 @@ import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import {
   Command,
   CommandEmpty,
@@ -30,6 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 const languages = [
   { label: "English", value: "en" },
@@ -46,6 +49,9 @@ const languages = [
 const FormSchema = z.object({
   language: z.string({
     required_error: "Please select a language.",
+  }),
+  name: z.string({
+    required_error: "Please enter name.",
   }),
 });
 
@@ -65,6 +71,8 @@ export default function BldgForm() {
     });
   }
 
+  const [open, setOpen] = useState(false);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -74,7 +82,7 @@ export default function BldgForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Language</FormLabel>
-              <Popover>
+              <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -106,6 +114,8 @@ export default function BldgForm() {
                             key={language.value}
                             onSelect={() => {
                               form.setValue("language", language.value);
+
+                              setOpen(false);
                             }}
                           >
                             <Check
@@ -126,6 +136,22 @@ export default function BldgForm() {
               </Popover>
               <FormDescription>
                 This is the language that will be used in the dashboard.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
               </FormDescription>
               <FormMessage />
             </FormItem>
