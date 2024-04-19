@@ -1,3 +1,4 @@
+import { useState } from "react";
 import AddButton from "../components/AddButton";
 import BldgForm from "../components/BldgForm";
 import Buildings from "../components/Buildings";
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function Home() {
+  const [openAddBldgForm, setOpenAddBldgForm] = useState(false);
   return (
     <>
       <Navbar />
@@ -27,13 +29,13 @@ export default function Home() {
           <Buildings />
         </div>
       </div>
-      <Dialog>
+      <Dialog open={openAddBldgForm} onOpenChange={setOpenAddBldgForm}>
         <DialogTrigger>
           <AddButton />
         </DialogTrigger>
         <DialogContent
           onPointerDownOutside={(e) => e.preventDefault()}
-          className="w-full max-w-2xl"
+          className="max-h-[95vh] w-full max-w-2xl overflow-auto"
         >
           <DialogHeader>
             <DialogTitle>Add Building</DialogTitle>
@@ -42,7 +44,10 @@ export default function Home() {
               account and remove your data from our servers.
             </DialogDescription> */}
           </DialogHeader>
-          <BldgForm />
+          <BldgForm
+            openAddBldgForm={openAddBldgForm}
+            setOpenAddBldgForm={setOpenAddBldgForm}
+          />
         </DialogContent>
       </Dialog>
 

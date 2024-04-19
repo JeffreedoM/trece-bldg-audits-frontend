@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import { ModeToggle } from "./ModeToggle.tsx";
 function Navbar() {
   return (
     <nav className="fixed top-0 w-full bg-background shadow">
@@ -10,10 +11,17 @@ function Navbar() {
         </Link>
         <div className="flex gap-x-20">
           <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
-            <NavLink to="/">Buildings</NavLink>
-            <NavLink to="/schools">Schools</NavLink>
-            <NavLink to="/barangays">Barangays</NavLink>
+            <NavLink to="/" className="text-foreground">
+              Buildings
+            </NavLink>
+            <NavLink to="/schools" className="text-foreground">
+              Schools
+            </NavLink>
+            <NavLink to="/barangays" className="text-foreground">
+              Barangays
+            </NavLink>
           </ul>
+          {/* <ModeToggle /> */}
           {/* <Button>Login</Button> */}
         </div>
       </div>

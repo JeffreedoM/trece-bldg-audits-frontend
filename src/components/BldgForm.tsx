@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,34 +32,30 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import { ConfigProvider, DatePicker } from "antd";
+import { FormSchema } from "@/lib/types";
+import { schools } from "@/data/schools";
+import { z } from "zod";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
+type BldgForm = {
+  openAddBldgForm: boolean;
+  setOpenAddBldgForm: boolean;
+};
 
-const FormSchema = z.object({
-  language: z.string({
-    required_error: "Please select a language.",
-  }),
-  name: z.string({
-    required_error: "Please enter name.",
-  }),
-});
-
-export default function BldgForm() {
+export default function BldgForm({
+  openAddBldgForm,
+  setOpenAddBldgForm,
+}: BldgForm) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
+  const {
+    register,
+    formState: { errors, isSubmitting, isSubmitted },
+  } = form;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    // setOpenAddBldgForm(false);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -69,19 +64,21 @@ export default function BldgForm() {
         </pre>
       ),
     });
+    console.log(data);
   }
-
+  console.log(errors);
   const [open, setOpen] = useState(false);
+  const [year, setYear] = useState("");
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
-          name="language"
+          name="school"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Language</FormLabel>
+            <FormItem className="flex flex-col gap-y-1">
+              <FormLabel>School</FormLabel>
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -89,31 +86,30 @@ export default function BldgForm() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "w-[200px] justify-between",
+                        "justify-between",
                         !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value
-                        ? languages.find(
-                            (language) => language.value === field.value,
-                          )?.label
-                        : "Select language"}
+                        ? schools.find((school) => school.value === field.value)
+                            ?.label
+                        : "Select school"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="p-0 sm:w-[38rem]">
                   <Command>
-                    <CommandInput placeholder="Search language..." />
-                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandInput placeholder="Search school..." />
+                    <CommandEmpty>No school found.</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
-                        {languages.map((language) => (
+                        {schools.map((school) => (
                           <CommandItem
-                            value={language.label}
-                            key={language.value}
+                            value={school.label}
+                            key={school.value}
                             onSelect={() => {
-                              form.setValue("language", language.value);
+                              form.setValue("school", school.value);
 
                               setOpen(false);
                             }}
@@ -121,12 +117,12 @@ export default function BldgForm() {
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                language.value === field.value
+                                school.value === field.value
                                   ? "opacity-100"
                                   : "opacity-0",
                               )}
                             />
-                            {language.label}
+                            {school.label}
                           </CommandItem>
                         ))}
                       </CommandList>
@@ -134,9 +130,6 @@ export default function BldgForm() {
                   </Command>
                 </PopoverContent>
               </Popover>
-              <FormDescription>
-                This is the language that will be used in the dashboard.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -146,17 +139,196 @@ export default function BldgForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Building Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="year"
+          render={({ field, fieldState }) => (
+            <FormItem className="col-span-2 lg:col-span-1">
+              <label className="text-sm font-medium" htmlFor="birthdate">
+                Year Established
+              </label>
+              <FormControl>
+                <ConfigProvider theme={{ token: { colorPrimary: "#16a34a" } }}>
+                  <DatePicker
+                    // status={
+                    //   isSubmitted == undefined || year == "" ? "error" : ""
+                    // }
+                    className="w-full py-2 font-['Poppins'] focus:outline-primary"
+                    picker="year"
+                    onChange={(date, dateString) => {
+                      setYear(dateString);
+                    }}
+                  />
+                </ConfigProvider>
+              </FormControl>
+              {/* <p className="text-sm font-medium text-destructive">
+                {isSubmitted == undefined || year == "" ? "Required" : ""}
+              </p> */}
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="storey"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of Storey</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="building_type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type of Building</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="structure_type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type of Structure</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="occupancy"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Design Occupancy</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* <Separator className="mb-3 mt-6" /> */}
+        <h3 className="my-4 font-semibold">Summary Report</h3>
+
+        <FormField
+          control={form.control}
+          name="rvs_score"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>RVS Score</FormLabel>
+              <FormControl>
+                <Input type="number" step={0.1} placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="vulnerability"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Vulnerability</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="physical_conditions"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Physical Conditions</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="compliance"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Compliance to Accessibility Law (%)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  placeholder=""
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="remarks"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Remarks for Compliance to Accessibility Law</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="hazard"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Hazard/Risk Mitigation Actions</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit">Submit</Button>
       </form>
     </Form>
