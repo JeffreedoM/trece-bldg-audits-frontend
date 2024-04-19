@@ -31,7 +31,10 @@ export default function Home() {
         <DialogTrigger>
           <AddButton />
         </DialogTrigger>
-        <DialogContent className="w-full max-w-2xl">
+        <DialogContent
+          onPointerDownOutside={(e) => e.preventDefault()}
+          className="w-full max-w-2xl"
+        >
           <DialogHeader>
             <DialogTitle>Add Building</DialogTitle>
             {/* <DialogDescription>
