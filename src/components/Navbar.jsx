@@ -1,9 +1,13 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 function Navbar() {
   return (
-    <nav className="bg-background fixed top-0 w-full shadow">
+    <nav className="fixed top-0 w-full bg-background shadow">
       <div className="wrapper flex h-[70px] items-center justify-between">
-        <h1 className="text-primary text-lg font-semibold">Building Audits</h1>
+        <Link to="/">
+          <h1 className="text-lg font-semibold text-primary">
+            Building Audits
+          </h1>
+        </Link>
         <div className="flex gap-x-20">
           <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
             <NavLink to="/">Buildings</NavLink>

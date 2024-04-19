@@ -1,4 +1,5 @@
 import AddButton from "../components/AddButton";
+import BldgForm from "../components/BldgForm";
 import Buildings from "../components/Buildings";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -32,12 +33,13 @@ export default function Home() {
         </DialogTrigger>
         <DialogContent className="w-full max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Create </DialogTitle>
-            <DialogDescription>
+            <DialogTitle>Add Building</DialogTitle>
+            {/* <DialogDescription>
               This action cannot be undone. This will permanently delete your
               account and remove your data from our servers.
-            </DialogDescription>
+            </DialogDescription> */}
           </DialogHeader>
+          <BldgForm />
         </DialogContent>
       </Dialog>
 
