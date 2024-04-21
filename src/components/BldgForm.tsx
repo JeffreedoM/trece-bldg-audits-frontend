@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -37,9 +35,27 @@ import { FormSchema } from "@/lib/types";
 import { schools } from "@/data/schools";
 import { z } from "zod";
 
+import axios from "../../api/axios.js";
+
+// Filepond
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import "filepond/dist/filepond.min.css";
+
+import {
+  makeDeleteRequest,
+  makeUploadRequest,
+} from "../cloudinary/cloudinaryHelper.js";
+
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+
+// types
 type BldgForm = {
   openAddBldgForm: boolean;
-  setOpenAddBldgForm: boolean;
+  setOpenAddBldgForm: (open: boolean) => void;
 };
 
 export default function BldgForm({
@@ -51,28 +67,97 @@ export default function BldgForm({
   });
   const {
     register,
-    formState: { errors, isSubmitting, isSubmitted },
+    formState: { errors, isSubmitting, isSubmitted, isSubmitSuccessful },
+    setError,
   } = form;
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    // setOpenAddBldgForm(false);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    console.log(data);
-  }
-  console.log(errors);
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState("");
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    data["year"] = year;
+
+    try {
+      const response = await axios.post("/", data);
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+      const errorMsg = error.response.data.error;
+      setError("name", {
+        type: "server",
+        message: errorMsg,
+      });
+    }
+
+    console.log(data);
+  }
+  if (isSubmitSuccessful) {
+    setOpenAddBldgForm(false);
+    toast({
+      title: "Successfully added building.",
+      // description: (
+      //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+      //     <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+      //   </pre>
+      // ),
+    });
+  }
+
+  console.log(errors);
+
+  // Filepond
+  const [files, setFiles] = useState([]);
+
+  const revert = (token, successCallback, errorCallback) => {
+    makeDeleteRequest({
+      token,
+      successCallback,
+      errorCallback,
+    });
+  };
+
+  const process = (
+    fieldName,
+    file,
+    metadata,
+    load,
+    error,
+    progress,
+    abort,
+    transfer,
+    options,
+  ) => {
+    const abortRequest = makeUploadRequest({
+      file,
+      fieldName,
+      successCallback: load,
+      errorCallback: error,
+      progressCallback: progress,
+    });
+
+    return {
+      abort: () => {
+        abortRequest();
+        abort();
+      },
+    };
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div>
+          <FilePond
+            files={files}
+            acceptedFileTypes="image/*"
+            onupdatefiles={setFiles}
+            allowMultiple={false}
+            // maxFiles={1}
+            server={{ process }}
+            name="file"
+            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+          />
+        </div>
         <FormField
           control={form.control}
           name="school"
@@ -152,7 +237,7 @@ export default function BldgForm({
           name="year"
           render={({ field, fieldState }) => (
             <FormItem className="col-span-2 lg:col-span-1">
-              <label className="text-sm font-medium" htmlFor="birthdate">
+              <label className="text-sm font-medium" htmlFor="year">
                 Year Established
               </label>
               <FormControl>
@@ -163,6 +248,7 @@ export default function BldgForm({
                     // }
                     className="w-full py-2 font-['Poppins'] focus:outline-primary"
                     picker="year"
+                    id="year"
                     onChange={(date, dateString) => {
                       setYear(dateString);
                     }}
@@ -195,7 +281,7 @@ export default function BldgForm({
             <FormItem>
               <FormLabel>Number of Storey</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="" {...field} />
+                <Input type="number" min={0} placeholder="" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -329,7 +415,9 @@ export default function BldgForm({
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Loading..." : "Add Building"}
+        </Button>
       </form>
     </Form>
   );

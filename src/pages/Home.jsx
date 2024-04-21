@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import AddButton from "../components/AddButton";
 import BldgForm from "../components/BldgForm";
 import Buildings from "../components/Buildings";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-
+import { useBuildingsContext } from "../hooks/useBuildingsContext";
+import axios from "../../api/axios";
 import {
   Dialog,
   DialogContent,
@@ -16,17 +17,30 @@ import {
 
 export default function Home() {
   const [openAddBldgForm, setOpenAddBldgForm] = useState(false);
+  const { buildings, dispatch } = useBuildingsContext();
+
+  useEffect(() => {
+    axios
+      .get("/", {})
+      .then((response) => {
+        dispatch({ type: "SET_BUILDINGS", payload: response.data });
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <>
       <Navbar />
       <div className="wrapper">
         Home
         <div className="mx-auto grid grid-cols-4 gap-4">
-          <Buildings />
-          <Buildings />
-          <Buildings />
-          <Buildings />
-          <Buildings />
+          {buildings &&
+            buildings.map((building) => {
+              return <Buildings key={building._id} building={building} />;
+            })}
         </div>
       </div>
       <Dialog open={openAddBldgForm} onOpenChange={setOpenAddBldgForm}>
@@ -39,10 +53,6 @@ export default function Home() {
         >
           <DialogHeader>
             <DialogTitle>Add Building</DialogTitle>
-            {/* <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription> */}
           </DialogHeader>
           <BldgForm
             openAddBldgForm={openAddBldgForm}

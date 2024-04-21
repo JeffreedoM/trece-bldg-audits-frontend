@@ -7,11 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function Buildings() {
+type BuildingsProps = {
+  building: String;
+};
+
+export default function ({ building }: BuildingsProps) {
+  const { name } = building;
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
+        <CardTitle>{name}</CardTitle>
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
       <CardContent>

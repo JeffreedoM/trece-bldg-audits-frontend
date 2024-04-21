@@ -5,14 +5,17 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeProvider.js";
 import { Toaster } from "@/components/ui/toaster";
+import { BuildingsContextProvider } from "./contexts/BuildingsContext.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
-      <App />
-      {/* </ThemeProvider> */}
-      <Toaster />
+      <BuildingsContextProvider>
+        {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
+        <App />
+        {/* </ThemeProvider> */}
+        <Toaster />
+      </BuildingsContextProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
