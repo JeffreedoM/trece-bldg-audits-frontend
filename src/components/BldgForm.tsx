@@ -29,7 +29,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ConfigProvider, DatePicker } from "antd";
 import { FormSchema } from "@/lib/types";
 import { schools } from "@/data/schools";
@@ -37,20 +37,7 @@ import { z } from "zod";
 
 import axios from "../../api/axios.js";
 
-// Filepond
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import "filepond/dist/filepond.min.css";
-
-import {
-  makeDeleteRequest,
-  makeUploadRequest,
-} from "../cloudinary/cloudinaryHelper.js";
-
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+import { useDropzone } from "react-dropzone";
 
 // types
 type BldgForm = {
@@ -74,11 +61,35 @@ export default function BldgForm({
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState("");
 
+  // react dropzone
+  const [imagePreview, setImagePreview] = useState("null");
+  const [image, setImage] = useState(null);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the dropped files, like setting the image state
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result);
+      setImage(file);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     data["year"] = year;
+    const formData = new FormData();
+    formData.append("image", image);
+
+    // Append other form data fields to the FormData object
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
     try {
-      const response = await axios.post("/", data);
+      const response = await axios.post("/", formData);
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Error:", error);
@@ -91,6 +102,7 @@ export default function BldgForm({
 
     console.log(data);
   }
+
   if (isSubmitSuccessful) {
     setOpenAddBldgForm(false);
     toast({
@@ -105,58 +117,43 @@ export default function BldgForm({
 
   console.log(errors);
 
-  // Filepond
-  const [files, setFiles] = useState([]);
-
-  const revert = (token, successCallback, errorCallback) => {
-    makeDeleteRequest({
-      token,
-      successCallback,
-      errorCallback,
-    });
-  };
-
-  const process = (
-    fieldName,
-    file,
-    metadata,
-    load,
-    error,
-    progress,
-    abort,
-    transfer,
-    options,
-  ) => {
-    const abortRequest = makeUploadRequest({
-      file,
-      fieldName,
-      successCallback: load,
-      errorCallback: error,
-      progressCallback: progress,
-    });
-
-    return {
-      abort: () => {
-        abortRequest();
-        abort();
-      },
-    };
-  };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div>
+        {/* <div>
           <FilePond
-            files={files}
-            acceptedFileTypes="image/*"
-            onupdatefiles={setFiles}
-            allowMultiple={false}
-            // maxFiles={1}
-            server={{ process }}
+            ref={pond}
+            files={file}
+            onupdatefiles={setFile}
+            // allowMultiple={true}
+            // maxFiles={3}
+            server={"http://localhost:5000/upload"}
+            // instantUpload={false}
             name="file"
             labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
           />
+        </div> */}
+        <div
+          {...getRootProps()}
+          className="mb-3 cursor-pointer rounded-md border bg-accent p-5 text-center"
+        >
+          <input {...getInputProps()} name="image" type="file" />
+          {image ? (
+            <div className="bg-accent">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="mx-auto h-64 max-w-full"
+              />
+            </div>
+          ) : (
+            <div>
+              <h4 className="mb-3 font-semibold">Add Building Image</h4>
+              <p className="text-sm">
+                Drag & drop an image here, or click to select one
+              </p>
+            </div>
+          )}
         </div>
         <FormField
           control={form.control}
@@ -403,7 +400,7 @@ export default function BldgForm({
         />
         <FormField
           control={form.control}
-          name="hazard"
+          name="mitigation_actions"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Hazard/Risk Mitigation Actions</FormLabel>

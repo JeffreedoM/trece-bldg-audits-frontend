@@ -14,6 +14,7 @@ export const makeUploadRequest = ({
   const formData = new FormData();
   formData.append(fieldName, file);
   formData.append("upload_preset", uploadPreset);
+  formData.append("folder", "trece-building-audits"); // Created folder in cloudinary
 
   const request = new XMLHttpRequest();
   request.open("POST", url);
@@ -24,9 +25,13 @@ export const makeUploadRequest = ({
 
   request.onload = () => {
     if (request.status >= 200 && request.status < 300) {
-      const { delete_token: deleteToken } = JSON.parse(request.response);
+      const { delete_token: deleteToken, public_id: publicId } = JSON.parse(
+        request.response,
+      );
 
+      console.log(request.response);
       successCallback(deleteToken);
+      console.log(publicId);
     } else {
       errorCallback(request.responseText);
     }

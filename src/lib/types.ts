@@ -11,18 +11,19 @@ export const FormSchema = z.object({
   location: z.string({
     required_error: "Please enter location.",
   }),
-  storey: z.string().optional(),
-  building_type: z.string().optional(),
-  structure_type: z.string().optional(),
-  occupancy: z.string().optional(),
-  rvs_score: z.coerce.number().optional(),
-  vulnerability: z.string().optional(),
-  physical_conditions: z.string().optional(),
+  storey: z.string().optional().default(""),
+  building_type: z.string().optional().default(""),
+  structure_type: z.string().optional().default(""),
+  occupancy: z.string().optional().default(""),
+  rvs_score: z.coerce.number().optional().default(0),
+  vulnerability: z.string().optional().default(""),
+  physical_conditions: z.string().optional().default(""),
   compliance: z.coerce
     .number()
     .min(0, "Must be 0-100 only.")
     .max(100, "Must be 0-100 only.")
-    .optional(),
+    .optional()
+    .default(0),
   remarks: z.string().optional(),
-  hazard: z.string().optional(),
+  mitigation_actions: z.string().optional(),
 });

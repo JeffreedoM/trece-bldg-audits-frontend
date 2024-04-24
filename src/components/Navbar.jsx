@@ -2,7 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import { ModeToggle } from "./ModeToggle.tsx";
 function Navbar() {
   return (
-    <nav className="fixed top-0 w-full bg-background shadow">
+    <nav className="fixed top-0 z-10 w-full bg-background shadow">
       <div className="wrapper flex h-[70px] items-center justify-between">
         <Link to="/">
           <h1 className="text-lg font-semibold text-primary">
@@ -11,15 +11,15 @@ function Navbar() {
         </Link>
         <div className="flex gap-x-20">
           <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
-            <NavLink to="/" className="text-foreground">
+            {/* <NavLink to="/" className="text-foreground">
               Buildings
-            </NavLink>
-            <NavLink to="/schools" className="text-foreground">
+            </NavLink> */}
+            {/* <NavLink to="/schools" className="text-foreground">
               Schools
             </NavLink>
             <NavLink to="/barangays" className="text-foreground">
               Barangays
-            </NavLink>
+            </NavLink> */}
           </ul>
           {/* <ModeToggle /> */}
           {/* <Button>Login</Button> */}

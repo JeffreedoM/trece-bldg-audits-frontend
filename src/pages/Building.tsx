@@ -1,0 +1,253 @@
+import { useCallback, useEffect, useState } from "react";
+import axios from "../../api/axios";
+import { useParams } from "react-router-dom";
+import { useBuildingContext } from "../hooks/useBuildingContext";
+import { Button } from "@/components/ui/button";
+
+import EditBldgForm from "@/components/EditBldgForm";
+import { ResponsivePie } from "@nivo/pie";
+import { useDropzone } from "react-dropzone";
+
+function Building() {
+  const { id } = useParams();
+  const { building, dispatch } = useBuildingContext();
+
+  const [editMode, setEditMode] = useState(false);
+
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${building && building.image}`;
+
+  useEffect(() => {
+    axios
+      .get(`/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        dispatch({ type: "SET_BUILDING", payload: response.data });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  // react dropzone
+  const [imagePreview, setImagePreview] = useState("null");
+  const [image, setImage] = useState(null);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the dropped files, like setting the image state
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result);
+      setImage(file);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const [hoverChangeImage, sethoverChangeImage] = useState(false);
+
+  return (
+    <div className="wrapper">
+      <div className="grid grid-cols-3 gap-10 pt-8">
+        <div className="col-span-3 mb-3 md:mb-0 lg:col-span-1">
+          {/* <img src={imageUrl} alt="" className="mx-auto h-72" /> */}
+          <div {...getRootProps()}>
+            <input {...getInputProps()} name="image" type="file" />
+            {image ? (
+              <div
+                onMouseEnter={() => {
+                  sethoverChangeImage(true);
+                }}
+                onMouseLeave={() => {
+                  sethoverChangeImage(false);
+                }}
+                className="relative cursor-pointer"
+              >
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mx-auto h-72"
+                />
+                <div
+                  className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                >
+                  Change Image
+                </div>
+              </div>
+            ) : (
+              <div
+                onMouseEnter={() => sethoverChangeImage(true)}
+                onMouseLeave={() => sethoverChangeImage(false)}
+                className="relative cursor-pointer"
+              >
+                <img src={imageUrl} alt="Preview" className="mx-auto h-72" />
+                <div
+                  className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                >
+                  Change Image
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="col-span-3 lg:col-span-2">
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold">Building Information</h3>
+            <Button onClick={() => setEditMode(!editMode)}>
+              {editMode ? "Close" : "Edit"}
+            </Button>
+          </div>
+
+          {editMode ? (
+            <EditBldgForm building={building} />
+          ) : (
+            <>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Building</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.name}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Year Established</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.year}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Location</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.location}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Number of Storey</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.storey}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Type of Building</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.building_type}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Type of Structure</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.building_structure}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Design Occupancy</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.occupancy}
+                </div>
+              </div>
+
+              <p className="my-6 font-bold">Summary Report</p>
+
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">RVS Score</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.rvs_score}
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Vulnerability</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.vulnerability}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">Physical Conditions</h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.physical_conditions}
+                </div>
+              </div>
+              <div className="mb-3 mt-6">
+                <h3 className="text-sm font-semibold">
+                  Compliance to Accessibility Law
+                </h3>
+              </div>
+              <div className="h-[350px] w-full">
+                <ResponsivePie
+                  activeOuterRadiusOffset={8}
+                  // width={500}
+                  height={350}
+                  animate
+                  data={[
+                    {
+                      color: "hsl(156, 70%, 50%)",
+                      id: "yes",
+                      value: `${building && building.compliance}`,
+                    },
+                    {
+                      color: "hsl(106, 70%, 50%)",
+                      id: "no",
+                      value: `${100 - (building && building.compliance)}`,
+                    },
+                  ]}
+                  legends={[
+                    {
+                      anchor: "top-right",
+                      direction: "column",
+                      effects: [
+                        {
+                          on: "hover",
+                          style: {
+                            itemTextColor: "#000",
+                          },
+                        },
+                      ],
+                      itemHeight: 18,
+                      itemTextColor: "#999",
+                      itemWidth: 100,
+                      symbolShape: "circle",
+                      symbolSize: 18,
+                      toggleSerie: true,
+                    },
+                  ]}
+                  margin={{
+                    bottom: 10,
+                    left: 120,
+                    right: 120,
+                    top: 10,
+                  }}
+                  theme={{
+                    text: {
+                      fontFamily:
+                        "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace",
+                    },
+                  }}
+                />
+              </div>
+
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">
+                  Remarks for Compliance to Accessibility Law
+                </h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.remarks}
+                </div>
+              </div>
+              <div className="mb-3">
+                <h3 className="text-sm font-semibold">
+                  Hazard/Risk Mitigation Actions
+                </h3>
+                <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
+                  {building && building.remarks}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Building;

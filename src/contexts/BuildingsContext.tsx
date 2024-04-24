@@ -32,7 +32,9 @@ type BuildingsContextProviderProps = {
 export const BuildingsContextProvider = ({
   children,
 }: BuildingsContextProviderProps) => {
-  const [state, dispatch] = useReducer(buildingsReducer, { buildings: null });
+  const [state, dispatch] = useReducer(buildingsReducer, {
+    buildings: null,
+  });
 
   return (
     <BuildingsContext.Provider value={{ ...state, dispatch }}>
