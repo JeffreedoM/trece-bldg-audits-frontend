@@ -32,7 +32,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useCallback, useRef, useState } from "react";
 import { ConfigProvider, DatePicker } from "antd";
 import { FormSchema } from "@/lib/types";
-import { schools } from "@/data/schools";
+import { schools, locations } from "@/data/data.js";
 import { z } from "zod";
 
 import axios from "../../api/axios.js";
@@ -59,6 +59,7 @@ export default function BldgForm({
   } = form;
 
   const [open, setOpen] = useState(false);
+  const [openLocation, setOpenLocation] = useState(false);
   const [year, setYear] = useState("");
 
   // react dropzone
@@ -262,11 +263,60 @@ export default function BldgForm({
           control={form.control}
           name="location"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col gap-y-1">
               <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
+              <Popover open={openLocation} onOpenChange={setOpenLocation}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "justify-between",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value
+                        ? locations.find(
+                            (location) => location.value === field.value,
+                          )?.label
+                        : "Select location"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 sm:w-[38rem]">
+                  <Command>
+                    <CommandInput placeholder="Search school..." />
+                    <CommandEmpty>No location found.</CommandEmpty>
+                    <CommandGroup>
+                      <CommandList>
+                        {locations.map((location) => (
+                          <CommandItem
+                            value={location.label}
+                            key={location.value}
+                            onSelect={() => {
+                              form.setValue("location", location.value);
+
+                              setOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                location.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                            {location.label}
+                          </CommandItem>
+                        ))}
+                      </CommandList>
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
