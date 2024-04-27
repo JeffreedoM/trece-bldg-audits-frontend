@@ -5,6 +5,8 @@ import Buildings from "../components/Buildings";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useBuildingsContext } from "../hooks/useBuildingsContext";
+import { useAuthContext } from "../hooks/useAuthContext";
+
 import axios from "../../api/axios";
 import {
   Dialog,
@@ -20,10 +22,15 @@ import { Link } from "react-router-dom";
 export default function Home() {
   const [openAddBldgForm, setOpenAddBldgForm] = useState(false);
   const { buildings, dispatch } = useBuildingsContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     axios
-      .get("/", {})
+      .get("/", {
+        // headers: {
+        //   Authorization: `Bearer ${user.token}`,
+        // },
+      })
       .then((response) => {
         dispatch({ type: "SET_BUILDINGS", payload: response.data });
         // console.log(response.data);
@@ -66,9 +73,7 @@ export default function Home() {
         )}
       </div>
       <Dialog open={openAddBldgForm} onOpenChange={setOpenAddBldgForm}>
-        <DialogTrigger>
-          <AddButton />
-        </DialogTrigger>
+        <DialogTrigger>{user && <AddButton />}</DialogTrigger>
         <DialogContent
           onPointerDownOutside={(e) => e.preventDefault()}
           className="max-h-[95vh] w-full max-w-2xl overflow-auto"

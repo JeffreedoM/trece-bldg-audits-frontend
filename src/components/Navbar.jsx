@@ -1,6 +1,16 @@
 import { Link, NavLink } from "react-router-dom";
 import { ModeToggle } from "./ModeToggle.tsx";
+import { Button } from "@/components/ui/button";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
+
 function Navbar() {
+  const { logout } = useLogout();
+  const { user } = useAuthContext();
+
+  const handleClick = () => {
+    logout();
+  };
   return (
     <nav className="fixed top-0 z-10 w-full bg-background shadow">
       <div className="wrapper flex h-[70px] items-center justify-between">
@@ -9,11 +19,22 @@ function Navbar() {
             Building Audits
           </h1>
         </Link>
-        <div className="flex gap-x-20">
+        <div className="flex gap-x-10">
           <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
             <NavLink to="/" className="text-foreground">
               Home
             </NavLink>
+            {user && (
+              <>
+                <p>{user.email}</p>
+                <Button onClick={handleClick}>Log out</Button>
+              </>
+            )}
+            {!user && (
+              <Link to="/login">
+                <Link to={"/login"}>Login</Link>
+              </Link>
+            )}
             {/* <NavLink to="/schools" className="text-foreground">
               Schools
             </NavLink>
@@ -22,7 +43,6 @@ function Navbar() {
             </NavLink> */}
           </ul>
           {/* <ModeToggle /> */}
-          {/* <Button>Login</Button> */}
         </div>
       </div>
     </nav>
