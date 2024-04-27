@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -23,10 +25,10 @@ function Login() {
       >
         <h1 className="mb-6 text-center text-xl font-semibold">Log In</h1>
         <div className="mb-4 flex flex-col">
-          <label htmlFor="" className="mb-1 font-semibold">
+          <label htmlFor="" className="mb-1 text-sm font-semibold">
             Email
           </label>
-          <input
+          <Input
             type="email"
             placeholder="sample@gmail.com"
             value={email}
@@ -35,11 +37,11 @@ function Login() {
           />
         </div>
         <div className="mb-4 flex flex-col">
-          <label htmlFor="" className="mb-1 font-semibold">
+          <label htmlFor="" className="mb-1 text-sm font-semibold">
             Password
           </label>
           <div className="relative">
-            <input
+            <Input
               type={showPassword ? "text" : "password"}
               placeholder="●●●●●●"
               value={password}
@@ -56,12 +58,7 @@ function Login() {
           </div>
         </div>
         {error && <div className=" text-red-500">{error}</div>}
-        <button
-          disabled={isLoading}
-          className="mt-2 w-full rounded bg-emerald-600 p-4 text-white transition duration-150 hover:bg-emerald-700"
-        >
-          Log In
-        </button>
+        <Button disabled={isLoading}>Log In</Button>
         {/* <p className="mt-3 text-center">
           <span>Already have an account? </span>
           <Link

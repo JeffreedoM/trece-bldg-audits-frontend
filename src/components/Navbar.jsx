@@ -20,10 +20,10 @@ function Navbar() {
           </h1>
         </Link>
         <div className="flex gap-x-10">
-          <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
-            <NavLink to="/" className="text-foreground">
+          <ul className="flex items-center gap-x-3 text-sm font-semibold">
+            {/* <NavLink to="/" className="text-foreground">
               Home
-            </NavLink>
+            </NavLink> */}
             {user && (
               <>
                 <p>{user.email}</p>
@@ -32,7 +32,7 @@ function Navbar() {
             )}
             {!user && (
               <Link to="/login">
-                <Link to={"/login"}>Login</Link>
+                <Button>Login</Button>
               </Link>
             )}
             {/* <NavLink to="/schools" className="text-foreground">
