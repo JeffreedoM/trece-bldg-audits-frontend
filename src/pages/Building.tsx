@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import EditBldgForm from "@/components/EditBldgForm";
 import { ResponsivePie } from "@nivo/pie";
 import { useDropzone } from "react-dropzone";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { toast } from "@/components/ui/use-toast";
+
+import schoolImg from "../assets/school.jpg";
 
 function Building() {
   const { id } = useParams();
@@ -15,7 +19,14 @@ function Building() {
   const [editMode, setEditMode] = useState(false);
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-  const imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${building && building.image}`;
+
+  let imageUrl = "";
+
+  if (building && building.image === "") {
+    imageUrl = schoolImg;
+  } else {
+    imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${building && building.image}`;
+  }
 
   useEffect(() => {
     axios
@@ -32,6 +43,8 @@ function Building() {
   // react dropzone
   const [imagePreview, setImagePreview] = useState("null");
   const [image, setImage] = useState(null);
+  const [updateImageSuccess, setUpdateImageSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the dropped files, like setting the image state
@@ -40,6 +53,7 @@ function Building() {
     reader.onload = () => {
       setImagePreview(reader.result);
       setImage(file);
+      setUpdateImageSuccess(false);
     };
     reader.readAsDataURL(file);
   }, []);
@@ -47,6 +61,25 @@ function Building() {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const [hoverChangeImage, sethoverChangeImage] = useState(false);
+
+  const handleChangeImage = async () => {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const response = await axios.put(`/edit-bldg-image/${id}`, formData);
+      console.log("Response:", response.data);
+      toast({
+        title: "Successfully updated image!",
+      });
+      setUpdateImageSuccess(true);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -88,6 +121,29 @@ function Building() {
                 >
                   Change Image
                 </div>
+              </div>
+            )}
+          </div>
+          <div>
+            {image && !updateImageSuccess && (
+              <div className="mt-4 flex items-center justify-between rounded-md bg-accent p-3 text-sm font-semibold">
+                {isLoading ? (
+                  <p className="mx-auto">Updating Image...</p>
+                ) : (
+                  <>
+                    <p>Confirm Update?</p>
+                    <div className="flex gap-1">
+                      <FaCheck
+                        className="cursor-pointer text-lg text-green-400"
+                        onClick={handleChangeImage}
+                      />
+                      <FaTimes
+                        className="cursor-pointer text-lg text-red-500"
+                        onClick={() => setImage(null)}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

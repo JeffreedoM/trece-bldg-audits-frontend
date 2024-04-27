@@ -11,9 +11,9 @@ function Navbar() {
         </Link>
         <div className="flex gap-x-20">
           <ul className="flex items-center gap-x-12 text-sm font-semibold uppercase">
-            {/* <NavLink to="/" className="text-foreground">
-              Buildings
-            </NavLink> */}
+            <NavLink to="/" className="text-foreground">
+              Home
+            </NavLink>
             {/* <NavLink to="/schools" className="text-foreground">
               Schools
             </NavLink>

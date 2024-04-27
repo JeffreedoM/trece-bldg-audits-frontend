@@ -54,7 +54,7 @@ export default function Home() {
           className="mb-8 w-full rounded-md border border-gray-300 p-4 py-5 shadow-md"
         />
         {filteredBuildings.length > 0 ? (
-          <div className="mx-auto grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="mx-auto grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {filteredBuildings.map((building) => (
               <Link key={building._id} to={`/building/${building._id}`}>
                 <Buildings building={building} />
