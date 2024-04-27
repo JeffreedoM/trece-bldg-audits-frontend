@@ -7,11 +7,11 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(null);
   const { dispatch } = useAuthContext();
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     setIsLoading(true);
     setError(null);
     axios
-      .post("user/login", { email, password })
+      .post("user/login", { username, password })
       .then((response) => {
         // Save the user to local storage
         localStorage.setItem("user", JSON.stringify(response.data));

@@ -4,14 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, error } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
+    await login(username, password);
   };
 
   const togglePasswordVisibility = () => {
@@ -26,14 +26,14 @@ function Login() {
         <h1 className="mb-6 text-center text-xl font-semibold">Log In</h1>
         <div className="mb-4 flex flex-col">
           <label htmlFor="" className="mb-1 text-sm font-semibold">
-            Email
+            Username
           </label>
           <Input
-            type="email"
+            type="text"
             placeholder="sample@gmail.com"
-            value={email}
+            value={username}
             className="rounded border border-gray-500 p-3 px-4"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="mb-4 flex flex-col">
