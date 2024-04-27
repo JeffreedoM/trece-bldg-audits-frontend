@@ -26,7 +26,7 @@ function Navbar() {
             </NavLink> */}
             {user && (
               <>
-                <p>{user.email}</p>
+                <p>Hi, {user.username}!</p>
                 <Button onClick={handleClick}>Log out</Button>
               </>
             )}
