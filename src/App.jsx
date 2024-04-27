@@ -15,7 +15,10 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route
+          path="/login"
+          element={!user ? <Login /> : <Navigate to="/" />}
+        ></Route>
         <Route path="/building/:id" element={<Building />}></Route>
         <Route path="/schools" element={<Schools />}></Route>
         <Route path="/barangays" element={<Barangays />}></Route>
