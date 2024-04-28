@@ -88,6 +88,7 @@ function EditBldgForm() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // e.preventDefault();
+    data["year"] = year;
 
     try {
       const response = await axios.put(`/edit/${id}`, data);
@@ -223,7 +224,11 @@ function EditBldgForm() {
                     // status={
                     //   isSubmitted == undefined || year == "" ? "error" : ""
                     // }
-                    defaultValue={dayjs("2020")}
+                    defaultValue={
+                      building && building.year
+                        ? dayjs(`'${building && building.year}'`)
+                        : ""
+                    }
                     className="w-full py-2 font-['Poppins'] focus:outline-primary"
                     picker="year"
                     id="year"
