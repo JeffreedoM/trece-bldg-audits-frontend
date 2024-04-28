@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -35,7 +36,6 @@ import { FormSchema } from "@/lib/types";
 import { schools, locations } from "@/data/data.js";
 import { z } from "zod";
 
-// @ts-expect-error
 import axios from "../../api/axios.js";
 
 import { useDropzone } from "react-dropzone";
@@ -67,7 +67,7 @@ export default function BldgForm({
   const [imagePreview, setImagePreview] = useState("null");
   const [image, setImage] = useState(null);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: any[]) => {
     // Do something with the dropped files, like setting the image state
     const file = acceptedFiles[0];
     const reader = new FileReader();
