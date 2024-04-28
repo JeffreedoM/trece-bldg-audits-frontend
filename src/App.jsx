@@ -5,7 +5,7 @@ import Barangays from "./pages/Barangays";
 
 import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
-import Building from "./pages/Building.tsx";
+import Building from "./pages/Building";
 import Login from "./pages/Login.jsx";
 
 import { useAuthContext } from "./hooks/useAuthContext";
