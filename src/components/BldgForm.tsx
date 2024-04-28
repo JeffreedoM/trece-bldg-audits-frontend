@@ -35,6 +35,7 @@ import { FormSchema } from "@/lib/types";
 import { schools, locations } from "@/data/data.js";
 import { z } from "zod";
 
+// @ts-expect-error
 import axios from "../../api/axios.js";
 
 import { useDropzone } from "react-dropzone";
