@@ -113,7 +113,7 @@ function EditBldgForm() {
       // ),
     });
   }
-  console.log(errors);
+  // console.log(errors);
 
   // Deleting building
 
@@ -122,11 +122,11 @@ function EditBldgForm() {
       const response = await axios.delete(`/${id}`);
       console.log("Response:", response.data);
       if (response) {
+        toast({
+          title: "Successfully deleted building!",
+        });
         navigate("/");
       }
-      toast({
-        title: "Successfully deleted building!",
-      });
     } catch (error) {
       console.error("Error:", error);
     }
