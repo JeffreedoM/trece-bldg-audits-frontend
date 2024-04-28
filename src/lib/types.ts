@@ -7,11 +7,11 @@ export const FormSchema = z.object({
   name: z.string({
     required_error: "Please enter building name.",
   }),
-  year: z.string().optional(),
+  year: z.coerce.number().optional(),
   location: z.string({
     required_error: "Please enter location.",
   }),
-  storey: z.string().optional().default(""),
+  storey: z.coerce.number().optional().default(""),
   building_type: z.string().optional().default(""),
   structure_type: z.string().optional().default(""),
   occupancy: z.string().optional().default(""),
@@ -24,6 +24,6 @@ export const FormSchema = z.object({
     .max(100, "Must be 0-100 only.")
     .optional()
     .default(0),
-  remarks: z.string().optional(),
-  mitigation_actions: z.string().optional(),
+  remarks: z.string().optional().default(""),
+  mitigation_actions: z.string().optional().default(""),
 });
