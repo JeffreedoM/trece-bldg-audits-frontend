@@ -386,7 +386,13 @@ export default function BldgForm({
             <FormItem>
               <FormLabel>RVS Score</FormLabel>
               <FormControl>
-                <Input type="number" step={0.1} placeholder="" {...field} />
+                <Input
+                  type="number"
+                  step={0.1}
+                  min={0}
+                  placeholder=""
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
