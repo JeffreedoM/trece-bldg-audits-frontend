@@ -19,7 +19,7 @@ export default function ({ building }: BuildingsProps) {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   let imageUrl = "";
 
-  if (image === "") {
+  if (image === "" || image === undefined) {
     imageUrl = schoolImg;
   } else {
     imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${image}`;

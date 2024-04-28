@@ -298,7 +298,7 @@ export default function BldgForm({
                             onSelect={() => {
                               form.setValue("location", location.value);
 
-                              setOpen(false);
+                              setOpenLocation(false);
                             }}
                           >
                             <Check
