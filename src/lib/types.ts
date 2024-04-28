@@ -12,7 +12,7 @@ export const FormSchema = z.object({
   location: z.string({
     required_error: "Please enter location.",
   }),
-  storey: z.coerce.number().optional().default(""),
+  storey: z.coerce.number().optional().default(0),
   building_type: z.string().optional().default(""),
   structure_type: z.string().optional().default(""),
   occupancy: z.string().optional().default(""),
