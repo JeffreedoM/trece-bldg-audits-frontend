@@ -9,12 +9,14 @@ import { ResponsivePie } from "@nivo/pie";
 import { useDropzone } from "react-dropzone";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { toast } from "@/components/ui/use-toast";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 import schoolImg from "../assets/school.jpg";
 
 function Building() {
   const { id } = useParams();
   const { building, dispatch } = useBuildingContext();
+  const { user } = useAuthContext();
 
   const [editMode, setEditMode] = useState(false);
 
@@ -89,44 +91,48 @@ function Building() {
       <div className="grid grid-cols-3 gap-10 pt-8">
         <div className="col-span-3 mb-3 md:mb-0 lg:col-span-1">
           {/* <img src={imageUrl} alt="" className="mx-auto h-72" /> */}
-          <div {...getRootProps()}>
-            <input {...getInputProps()} name="image" type="file" />
-            {image ? (
-              <div
-                onMouseEnter={() => {
-                  sethoverChangeImage(true);
-                }}
-                onMouseLeave={() => {
-                  sethoverChangeImage(false);
-                }}
-                className="relative cursor-pointer"
-              >
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="mx-auto h-72"
-                />
+          {!user ? (
+            <img src={imageUrl} alt="Building Image" className="mx-auto h-72" />
+          ) : (
+            <div {...getRootProps()}>
+              <input {...getInputProps()} name="image" type="file" />
+              {image ? (
                 <div
-                  className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                  onMouseEnter={() => {
+                    sethoverChangeImage(true);
+                  }}
+                  onMouseLeave={() => {
+                    sethoverChangeImage(false);
+                  }}
+                  className="relative cursor-pointer"
                 >
-                  Change Image
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="mx-auto h-72"
+                  />
+                  <div
+                    className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                  >
+                    Change Image
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div
-                onMouseEnter={() => sethoverChangeImage(true)}
-                onMouseLeave={() => sethoverChangeImage(false)}
-                className="relative cursor-pointer"
-              >
-                <img src={imageUrl} alt="Preview" className="mx-auto h-72" />
+              ) : (
                 <div
-                  className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                  onMouseEnter={() => sethoverChangeImage(true)}
+                  onMouseLeave={() => sethoverChangeImage(false)}
+                  className="relative cursor-pointer"
                 >
-                  Change Image
+                  <img src={imageUrl} alt="Preview" className="mx-auto h-72" />
+                  <div
+                    className={`${hoverChangeImage ? "opacity-100" : "opacity-0"} absolute bottom-0 w-full bg-black/60 p-4 text-center text-sm text-white transition-opacity duration-300 `}
+                  >
+                    Change Image
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
           <div>
             {image && !updateImageSuccess && (
               <div className="mt-4 flex items-center justify-between rounded-md bg-accent p-3 text-sm font-semibold">
@@ -152,11 +158,13 @@ function Building() {
           </div>
         </div>
         <div className="col-span-3 lg:col-span-2">
-          <div className="flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between">
             <h3 className="font-bold">Building Information</h3>
-            <Button onClick={() => setEditMode(!editMode)}>
-              {editMode ? "Close" : "Edit"}
-            </Button>
+            {user && (
+              <Button onClick={() => setEditMode(!editMode)}>
+                {editMode ? "Close" : "Edit"}
+              </Button>
+            )}
           </div>
 
           {editMode ? (
