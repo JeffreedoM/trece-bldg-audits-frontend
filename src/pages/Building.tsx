@@ -22,7 +22,10 @@ function Building() {
 
   let imageUrl = "";
 
-  if (building && building.image === "") {
+  if (
+    (building && building.image === undefined) ||
+    (building && building.image == "")
+  ) {
     imageUrl = schoolImg;
   } else {
     imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${building && building.image}`;
@@ -157,7 +160,7 @@ function Building() {
           </div>
 
           {editMode ? (
-            <EditBldgForm building={building} />
+            <EditBldgForm />
           ) : (
             <>
               <div className="mb-3">
@@ -295,7 +298,7 @@ function Building() {
                   Hazard/Risk Mitigation Actions
                 </h3>
                 <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
-                  {building && building.remarks}
+                  {building && building.mitigation_actions}
                 </div>
               </div>
             </>
