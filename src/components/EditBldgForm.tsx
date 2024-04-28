@@ -5,6 +5,17 @@ import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import {
   Command,
@@ -38,11 +49,12 @@ import moment from "moment";
 import dayjs from "dayjs";
 
 import axios from "../../api/axios.js";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useBuildingContext } from "../hooks/useBuildingContext";
 
 function EditBldgForm() {
   const { building, dispatch } = useBuildingContext();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -101,6 +113,24 @@ function EditBldgForm() {
     });
   }
   console.log(errors);
+
+  // Deleting building
+
+  const deleteBldg = async () => {
+    try {
+      const response = await axios.delete(`/${id}`);
+      console.log("Response:", response.data);
+      if (response) {
+        navigate("/");
+      }
+      toast({
+        title: "Successfully deleted building!",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
@@ -411,9 +441,34 @@ function EditBldgForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Loading..." : "Save Changes"}
-        </Button>
+        <div className="flex justify-between">
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Loading..." : "Save Changes"}
+          </Button>
+
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button type="button" variant="destructive">
+                Delete Building
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  building and remove the data from the database.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteBldg}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </form>
     </Form>
   );
