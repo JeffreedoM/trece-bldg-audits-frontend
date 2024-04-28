@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { ModeToggle } from "./ModeToggle.tsx";
+import { ModeToggle } from "./ModeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
