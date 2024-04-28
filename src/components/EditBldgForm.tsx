@@ -89,6 +89,17 @@ function EditBldgForm() {
       // });
     }
   }
+
+  if (isSubmitSuccessful) {
+    toast({
+      title: "Successfully updated building.",
+      // description: (
+      //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+      //     <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+      //   </pre>
+      // ),
+    });
+  }
   console.log(errors);
   return (
     <Form {...form}>
@@ -400,7 +411,9 @@ function EditBldgForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Loading..." : "Save Changes"}
+        </Button>
       </form>
     </Form>
   );
