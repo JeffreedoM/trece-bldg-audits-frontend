@@ -7,6 +7,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Building from "./pages/Building";
 import Login from "./pages/Login.jsx";
+import { Toaster } from "@/components/ui/toaster";
 
 import { useAuthContext } from "./hooks/useAuthContext";
 function App() {
