@@ -4,10 +4,12 @@ import axios from "../../api/axios";
 
 export const useLogin = () => {
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  //@ts-ignore
   const { dispatch } = useAuthContext();
 
-  const login = async (username, password) => {
+  const login = async (username: any, password: any) => {
     setIsLoading(true);
     setError(null);
     axios

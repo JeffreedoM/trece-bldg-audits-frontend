@@ -1,10 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
+//@ts-nocheck
 import { IoLocationOutline } from "react-icons/io5";
 import schoolImg from "../assets/school.jpg";
 
