@@ -204,7 +204,7 @@ function Building() {
               <div className="mb-3">
                 <h3 className="text-sm font-semibold">Type of Structure</h3>
                 <div className="min-h-11 rounded-md bg-accent p-3 text-sm">
-                  {building && building.building_structure}
+                  {building && building.structure_type}
                 </div>
               </div>
               <div className="mb-3">
