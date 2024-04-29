@@ -62,7 +62,7 @@ function EditBldgForm() {
       school: building && building.school,
       name: building && building.name,
       location: building && building.location,
-      year: building && building.year,
+      // year: dayjs(`'${building && building.year}'`),
       storey: building && building.storey,
       building_type: building && building.building_type,
       structure_type: building && building.structure_type,
@@ -84,7 +84,7 @@ function EditBldgForm() {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [openLocation, setOpenLocation] = useState(false);
-  const [year, setYear] = useState("");
+  const [year, setYear] = useState(dayjs(`'${building && building.year}'`));
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // e.preventDefault();
