@@ -1,11 +1,14 @@
+import * as React from "react";
 import {
   // ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
+  // SortingState,
   //   ColumnFiltersState,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -23,6 +26,7 @@ import { useState } from "react";
 
 export function SchoolTable({ columns, data }) {
   const [columnFilters, setColumnFilters] = useState([]);
+  const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
     data,
@@ -31,8 +35,11 @@ export function SchoolTable({ columns, data }) {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
       columnFilters,
+      sorting,
     },
   });
 
@@ -41,9 +48,9 @@ export function SchoolTable({ columns, data }) {
       <div className="flex items-center py-4">
         <Input
           placeholder="Search school..."
-          value={table.getColumn("school")?.getFilterValue() ?? ""}
+          value={table.getColumn("_id")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("school")?.setFilterValue(event.target.value)
+            table.getColumn("_id")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
