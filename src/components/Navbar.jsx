@@ -3,6 +3,7 @@ import { ModeToggle } from "./ModeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
+import { Separator } from "@/components/ui/separator";
 
 function Navbar() {
   const { logout } = useLogout();
@@ -20,25 +21,30 @@ function Navbar() {
           </h1>
         </Link>
         <div className="flex gap-x-10">
-          <ul className="flex items-center gap-x-3 text-sm font-semibold">
+          <ul className="flex items-center gap-x-6 text-sm font-semibold">
             {/* <NavLink to="/" className="text-foreground">
               Home
             </NavLink> */}
-            {user && (
-              <>
-                <p>Hi, {user.username}!</p>
-                <Button onClick={handleClick}>Log out</Button>
-              </>
-            )}
-            {!user && (
-              <Link to="/login">
-                <Button>Login</Button>
-              </Link>
-            )}
-            {/* <NavLink to="/schools" className="text-foreground">
+
+            <NavLink to="/schools" className="text-foreground">
               Schools
             </NavLink>
-            <NavLink to="/barangays" className="text-foreground">
+            <Separator orientation="vertical" />
+            <div className="flex items-center gap-x-3">
+              {user && (
+                <>
+                  <p>Hi, {user.username}!</p>
+                  <Button onClick={handleClick}>Log out</Button>
+                </>
+              )}
+              {!user && (
+                <Link to="/login">
+                  <Button>Login</Button>
+                </Link>
+              )}
+            </div>
+
+            {/* <NavLink to="/barangays" className="text-foreground">
               Barangays
             </NavLink> */}
           </ul>
