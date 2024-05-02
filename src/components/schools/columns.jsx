@@ -1,5 +1,5 @@
 // import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,31 @@ import {
 export const columns = [
   {
     accessorKey: "_id",
-    header: "School",
+    header: ({ column }) => {
+      return (
+        <div
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex w-max cursor-pointer items-center gap-x-3"
+        >
+          <span>School</span>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "count",
-    header: "No. of Buildings",
+    header: ({ column }) => {
+      return (
+        <div
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex w-max cursor-pointer items-center gap-x-3"
+        >
+          <span>No. of Buildings</span>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
   },
   {
     id: "actions",
