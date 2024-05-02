@@ -22,10 +22,10 @@ function Navbar() {
         </Link>
         <div className="flex gap-x-10">
           <ul className="flex items-center gap-x-6 text-sm font-semibold">
-            {/* <NavLink to="/" className="text-foreground">
+            <NavLink to="/" className="text-foreground">
               Home
-            </NavLink> */}
-
+            </NavLink>
+            <Separator orientation="vertical" />
             <NavLink to="/schools" className="text-foreground">
               Schools
             </NavLink>

@@ -1,5 +1,6 @@
 // import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 export const columns = [
   {
-    accessorKey: "school",
+    accessorKey: "_id",
     header: "School",
+  },
+  {
+    accessorKey: "count",
+    header: "No. of Buildings",
   },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const school = row.original;
 
       //   return (
       //     <DropdownMenu>
@@ -43,7 +48,14 @@ export const columns = [
       //     </DropdownMenu>
       //   );
 
-      return <Button>View</Button>;
+      return (
+        <div className="flex gap-1">
+          {/* <Button>Edit</Button> */}
+          <Link to={`${school._id}`}>
+            <Button>View</Button>
+          </Link>
+        </div>
+      );
     },
   },
 ];
