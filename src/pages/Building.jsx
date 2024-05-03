@@ -12,6 +12,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 import schoolImg from "../assets/school.jpg";
+import BldgDefects from "../components/BldgDefects";
 
 function Building() {
   const { id } = useParams();
@@ -155,6 +156,10 @@ function Building() {
                 )}
               </div>
             )}
+          </div>
+          <div className="my-3">
+            <h3 className="text-sm font-semibold">Sample Defects Found:</h3>
+            <BldgDefects />
           </div>
         </div>
         <div className="col-span-3 lg:col-span-2">

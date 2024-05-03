@@ -36,7 +36,7 @@ function School() {
 
   return (
     <div className="wrapper pt-4">
-      <div className="w-full rounded-lg bg-muted p-4">
+      <div className="w-full rounded-md bg-muted p-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -54,7 +54,7 @@ function School() {
         </Breadcrumb>
       </div>
 
-      <div className="mx-auto grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mt-8">
+      <div className="mx-auto mt-8 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {buildings &&
           buildings.map((building) => (
             <Link key={building._id} to={`/building/${building._id}`}>
