@@ -40,11 +40,15 @@ function School() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              <Link to={"/"}>
+                <BreadcrumbLink>Home</BreadcrumbLink>
+              </Link>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/schools">Schools</BreadcrumbLink>
+              <Link to={"/schools"}>
+                <BreadcrumbLink>Schools</BreadcrumbLink>
+              </Link>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

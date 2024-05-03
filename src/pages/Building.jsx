@@ -1,7 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "../../api/axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useBuildingContext } from "../hooks/useBuildingContext";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
+} from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
 import EditBldgForm from "@/components/EditBldgForm";
@@ -88,7 +103,44 @@ function Building() {
   };
 
   return (
-    <div className="wrapper">
+    <div className="wrapper pt-4">
+      <div className="w-full rounded-md bg-muted p-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Link to={"/"}>
+                <BreadcrumbLink>Home</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <Link to={"/schools"}>
+                <BreadcrumbLink>Schools</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1">
+                  <BreadcrumbEllipsis className="h-4 w-4" />
+                  <span className="sr-only">Toggle menu</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem>
+                    <Link to={`/schools/${building && building.school}`}>
+                      {building && building.school}
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{building && building.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <div className="grid grid-cols-3 gap-10 pt-8">
         <div className="col-span-3 mb-3 md:mb-0 lg:col-span-1">
           {/* <img src={imageUrl} alt="" className="mx-auto h-72" /> */}
